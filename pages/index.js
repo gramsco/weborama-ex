@@ -1,65 +1,38 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { notification } from "antd";
+import { useQuery } from "components/query/context";
+import { useState, useEffect } from "react";
+import { getUserData } from "services";
+import Dashboard from "components/user/dashboard";
 
 export default function Home() {
+  const { query } = useQuery();
+
+  const [loading, setLoading] = useState(false);
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    if (!query) return;
+    setLoading(true);
+    getUserData(query)
+      .then((res) => {
+        notification.success({ message: "User found!" });
+        setLoading(false);
+        setUserData(res.data);
+      })
+      .catch(() => {
+        notification.error({ message: "An error occured" });
+        setLoading(false);
+      });
+  }, [query]);
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div>
+      <h1>GitHub Dashboard</h1>
+      <div style={{ display: "grid", placeItems: "center" }}>
+        <p>Use the above searchbar to query for github users.</p>
+      </div>
+      {!!userData && <Dashboard {...userData} />}
     </div>
-  )
+  );
 }
