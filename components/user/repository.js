@@ -99,4 +99,24 @@ Keys example of api.github.com/users/{user}/repos
 
 */
 
-export default function Repository(props) {}
+import { EyeOutlined } from "@ant-design/icons";
+
+export default function Repository({
+  html_url,
+  name,
+  created_at,
+  description,
+  ...props
+}) {
+  return (
+    <div style={{ padding: "2%" }}>
+      <h2 style={{ textAlign: "center" }}>{name}</h2>
+      <p>{name}</p>
+      <h3>Creation date : {new Date(created_at).toLocaleDateString()}</h3>
+      <a href={html_url} target="_blank" rel="noopener">
+        <EyeOutlined /> Open the project in a new tab
+      </a>
+      <div>{description ?? "No description available."}</div>
+    </div>
+  );
+}

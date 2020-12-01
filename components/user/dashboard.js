@@ -44,6 +44,7 @@ export default function UserDashboard({
   login,
   repos_url,
   created_at,
+  avatar_url,
   ...props
 }) {
   const [repos, setRepos] = useState([]);
@@ -51,7 +52,10 @@ export default function UserDashboard({
 
   useEffect(() => {
     getUserRepos(repos_url)
-      .then((res) => setRepos(res.data))
+      .then((res) => {
+        setRepos(res.data);
+        if (res.data.length) setSelected(0);
+      })
       .catch((message) => notification.error({ message }));
   }, [login]);
 
@@ -59,7 +63,7 @@ export default function UserDashboard({
     <div>
       <h1>
         {" "}
-        <Avatar icon={<UserOutlined />} /> {login}
+        <img src={avatar_url} style={{ height: "50px" }} /> {login}
       </h1>
       <Layout>
         <Sider>
@@ -72,7 +76,7 @@ export default function UserDashboard({
           </Menu>
         </Sider>
         <Content style={{ width: "80vw" }}>
-          <Repository {...selected} />
+          <Repository {...repos[selected]} />
         </Content>
       </Layout>
     </div>

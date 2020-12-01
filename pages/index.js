@@ -20,8 +20,8 @@ export default function Home() {
         setLoading(false);
         setUserData(res.data);
       })
-      .catch(() => {
-        notification.error({ message: "An error occured" });
+      .catch((message) => {
+        notification.error({ message });
         setLoading(false);
       });
   }, [query]);
@@ -32,7 +32,8 @@ export default function Home() {
       <div style={{ display: "grid", placeItems: "center" }}>
         <p>Use the above searchbar to query for github users.</p>
       </div>
-      {!!userData && <Dashboard {...userData} />}
+      {loading && "...loading"}
+      {!!userData && !loading && <Dashboard {...userData} />}
     </div>
   );
 }
